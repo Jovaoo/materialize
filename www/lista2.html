@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceX API Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo">SpaceX API</a>
+                <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="mobile-menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>SpaceX Launches</h1>
+            <div id="launches"></div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            M.Sidenav.init(document.querySelectorAll('.sidenav'), { draggable: true });
+        });
+
+        fetch('https://api.spacexdata.com/v3/launches')
+            .then(response => response.json())
+            .then(data => {
+                const launchesContainer = document.getElementById('launches');
+                data.slice(0, 5).forEach(launch => {
+                    const launchCard = document.createElement('div');
+                    launchCard.classList.add('card');
+                    launchCard.innerHTML = `
+                        <div class="card-content">
+                            <span class="card-title">${launch.mission_name}</span>
+                            <p>${launch.details}</p>
+                        </div>
+                    `;
+                    launchesContainer.appendChild(launchCard);
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+
+</html>

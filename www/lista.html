@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpaceX News</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .navbar a {
+            margin: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Rest of the CSS code */
+        .swiper-slide {
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .swiper-slide {
+                padding: 10px;
+            }
+            
+            .swiper-slide h2 {
+                font-size: 18px;
+            }
+            
+            .swiper-slide p {
+                font-size: 14px;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .swiper-slide {
+                padding: 15px;
+            }
+            
+            .swiper-slide h2 {
+                font-size: 20px;
+            }
+            
+            .swiper-slide p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#news1">News 1</a>
+        <a href="#news2">News 2</a>
+        <a href="#news3">News 3</a>
+    </div>
+
+    <div id="news-list" class="swiper-container">
+        <div class="swiper-wrapper"></div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "https://api.spacexdata.com/v3/launches",
+                type: "GET",
+                success: function(data) {
+                    var newsList = "";
+                    for (var i = 0; i < 3; i++) { // BEGIN: Limit to 5 items
+                        newsList += "<div id='news" + (i+1) + "' class='swiper-slide'>";
+                        newsList += "<h2>" + data[i].mission_name + "</h2>";
+                        newsList += "<p>" + data[i].details + "</p>";
+                        newsList += "<hr>";
+                        newsList += "<br>";
+                        newsList += "</div>";
+                        $(".navbar a:nth-child(" + (i+1) + ")").text(data[i].mission_name); // BEGIN: Replace navbar text with news title
+                    } // END: Limit to 5 items
+                    $(".swiper-wrapper").html(newsList);
+
+                    var swiper = new Swiper('.swiper-container', {
+                        slidesPerView: 'auto',
+                        spaceBetween: 10,
+                        grabCursor: true,
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                    });
+                }
+            });
+        });
+        $(".navbar a").click(function(event) {
+            event.preventDefault();
+            var newsId = $(this).attr("href");
+            $(newsId)[0].scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
